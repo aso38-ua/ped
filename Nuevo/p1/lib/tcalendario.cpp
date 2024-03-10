@@ -260,9 +260,6 @@ char *TCalendario::Mensaje(){
     return this->mensaje;
 }
 
-
-
-
 bool TCalendario::EsFechaValida(int d, int m, int a) {
     if (a < 1900)
         return false;
