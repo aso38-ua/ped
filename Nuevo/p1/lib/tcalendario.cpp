@@ -133,20 +133,30 @@ TCalendario TCalendario::operator-(int dias){
     return resultado;
 }
 
-TCalendario TCalendario::operator++(int day){
-
+// Sobrecarga del operador de incremento (postincremento)
+TCalendario TCalendario::operator++(int) {
+    TCalendario copia(*this); // Hacemos una copia del objeto actual
+    *this = *this + 1; // Utilizamos el operador de suma para incrementar la fecha en un día
+    return copia; // Devolvemos la copia del objeto antes de incrementarlo
 }
 
-TCalendario& TCalendario::operator++(){
-    
+// Sobrecarga del operador de incremento (preincremento)
+TCalendario& TCalendario::operator++() {
+    *this = *this + 1; // Utilizamos el operador de suma para incrementar la fecha en un día
+    return *this; // Devolvemos una referencia al objeto actual
 }
 
-TCalendario TCalendario::operator--(int day){
-
+// Sobrecarga del operador de decremento (postdecremento)
+TCalendario TCalendario::operator--(int) {
+    TCalendario copia(*this); // Hacemos una copia del objeto actual
+    *this = *this - 1; // Utilizamos el operador de resta para decrementar la fecha en un día
+    return copia; // Devolvemos la copia del objeto antes de decrementarlo
 }
 
-TCalendario& TCalendario::operator--(){
-    
+// Sobrecarga del operador de decremento (predecremento)
+TCalendario& TCalendario::operator--() {
+    *this = *this - 1; // Utilizamos el operador de resta para decrementar la fecha en un día
+    return *this; // Devolvemos una referencia al objeto actual
 }
 
 bool TCalendario::ModFecha (int dia, int mes, int anyo){
@@ -202,13 +212,27 @@ bool TCalendario::operator !=(const TCalendario& otro) const{
 }
 
 // Sobrecarga del operador >; (ver ACLARACIÓN sobre ORDENACIÓN)
-bool TCalendario::operator>(const TCalendario&){
-
+bool TCalendario::operator>(const TCalendario& otro) const {
+    // Comparamos las fechas primero
+    if (anyo > otro.anyo || (anyo == otro.anyo && mes > otro.mes) || (anyo == otro.anyo && mes == otro.mes && dia > otro.dia)) {
+        return true; // La fecha de T1 es posterior a la de T2
+    } else if (anyo == otro.anyo && mes == otro.mes && dia == otro.dia) {
+        // Si las fechas son iguales, comparamos los mensajes
+        if (mensaje == nullptr && otro.mensaje != nullptr) {
+            return false; // T1 tiene mensaje NULL y T2 tiene mensaje no NULL
+        } else if (mensaje != nullptr && otro.mensaje == nullptr) {
+            return true; // T1 tiene mensaje no NULL y T2 tiene mensaje NULL
+        } else if (mensaje != nullptr && otro.mensaje != nullptr) {
+            return strcmp(mensaje, otro.mensaje) > 0; // Comparamos los mensajes usando strcmp
+        }
+    }
+    return false; // Si ninguna condición se cumple, T1 no es mayor que T2
 }
 
 // Sobrecarga del operador <; (ver ACLARACIÓN sobre ORDENACIÓN)
-bool TCalendario::operator<(const TCalendario&){
-
+bool TCalendario::operator<(const TCalendario& otro) const {
+    // La comparación de < es inversa a la de >
+    return otro > *this; // Simplemente utilizamos el operador > y lo invertimos
 }
 
 //TCalendario vacío

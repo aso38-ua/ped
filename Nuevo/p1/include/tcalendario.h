@@ -46,9 +46,9 @@ public:
     // Sobrecarga del operador desigualdad;
     bool operator !=(const TCalendario&) const;
     // Sobrecarga del operador >; (ver ACLARACIÓN sobre ORDENACIÓN)
-    bool operator>(const TCalendario&);
+    bool operator>(const TCalendario&) const;
     // Sobrecarga del operador <; (ver ACLARACIÓN sobre ORDENACIÓN)
-    bool operator<(const TCalendario&);
+    bool operator<(const TCalendario&) const;
     //TCalendario vacío
     bool EsVacio();
     // Devuelve el día del calendario;
