@@ -2,6 +2,7 @@
 #define TCALENDARIO_H
 
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 
@@ -12,6 +13,8 @@ private:
     int mes;
     int anyo;
     char* mensaje;
+    bool EsFechaValida(int d, int m, int a);
+    bool EsBisiesto(int); 
 
 public:
     //Constructor por defecto: inicializa dia, mes y anyo a 1/1/1900 y mensaje a NULL
@@ -61,10 +64,9 @@ public:
     char *Mensaje();
 
     // Sobrecarga del operador salida
-    friend std::ostream& operator<<(std::ostream &, TCalendario &);
+    friend ostream& operator<<(ostream &,const TCalendario &);
 
-private:
-    bool EsFechaValida(int d, int m, int a);
+    
 
 };
 

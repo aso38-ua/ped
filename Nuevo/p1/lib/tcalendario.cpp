@@ -9,36 +9,62 @@ TCalendario::TCalendario(){
     this->dia=1;
     this->mes=1;
     this->anyo=1900;
-    this->mensaje=nullptr;
+    this->mensaje=NULL;
 }
 
-TCalendario::TCalendario(int dia, int mes, int anyo, char* mensaje){
-    if (!EsFechaValida(dia, mes, anyo))
-    {
+TCalendario::TCalendario(int dia, int mes, int anyo, char * m){
+    if(EsFechaValida(dia, mes, anyo)){
+        this->dia = dia;
+        this->mes = mes;
+        this->anyo = anyo;
+
+        if(m != NULL){
+            this->mensaje = new char[strlen(m)+1];
+            strcpy(this->mensaje, m);
+        }
+        else this->mensaje = NULL;
+    }
+    else{
         this->dia = 1;
         this->mes = 1;
         this->anyo = 1900;
-        this->mensaje = nullptr;
+        this->mensaje = NULL;
     }
-    else{
-        this->dia=dia;
-        this->mes=mes;
-        this->anyo=anyo;
-        this->mensaje = new char[strlen(mensaje) + 1];
-        strcpy(this->mensaje, mensaje);
-    }
-    
 }
 
 TCalendario::TCalendario (const TCalendario& calendario){
-    this->dia=calendario.dia;
+    if (EsFechaValida(calendario.dia,calendario.mes,calendario.anyo))
+    {
+        this->dia = calendario.dia;
+        this->mes = calendario.mes;
+        this->anyo = calendario.anyo;
+
+        if(calendario.mensaje != NULL){
+            this->mensaje = new char[strlen(calendario.mensaje)+1];
+            strcpy(this->mensaje, calendario.mensaje);
+        }
+        else this->mensaje = NULL;
+    }
+
+    else{
+        this->dia = 1;
+        this->mes = 1;
+        this->anyo = 1900;
+        this->mensaje = NULL;
+    }
+    
 }
 
 TCalendario::~TCalendario() {
     this->dia=1;
     this->mes=1;
     this->anyo=1900;
-    this->mensaje=nullptr;
+    if (this->mensaje!=NULL)
+    {
+        delete [] this->mensaje;
+    }
+    
+    this->mensaje=NULL;
 }
 
 TCalendario& TCalendario::operator=(const TCalendario& calendario){
@@ -53,109 +79,126 @@ TCalendario& TCalendario::operator=(const TCalendario& calendario){
 
 // Sobrecarga del operador: SUMA de fecha + un número de dias;
 TCalendario TCalendario::operator+(int dias){
-    TCalendario resultado(*this);
+    TCalendario tcalendario(*this);
 
-    // Sumamos los días
-    int diasActuales = Dia();
-    int mesesActuales = Mes();
-    int anyosActuales = Anyo();
-
-    while (dias > 0) {
-        // Determinamos el máximo de días para el mes actual y año actual
-        int maxDiasMes = 31;
-        if (mesesActuales == 2) {
-            maxDiasMes = ((anyosActuales % 4 == 0 && anyosActuales % 100 != 0) || (anyosActuales % 400 == 0)) ? 29 : 28;
-        } else if (mesesActuales == 4 || mesesActuales == 6 || mesesActuales == 9 || mesesActuales == 11) {
-            maxDiasMes = 30;
-        }
-
-        int diasRestantesEnMes = maxDiasMes - diasActuales;
-        if (diasRestantesEnMes >= dias) {
-            // Si los días restantes en el mes son suficientes para completar la suma, simplemente sumamos y salimos del bucle
-            diasActuales += dias;
-            break;
-        } 
-        else {
-            // Si no, avanzamos al siguiente mes
-            dias -= diasRestantesEnMes + 1; // Restamos los días que ya hemos sumado más el día actual
-            diasActuales = 1; // Reiniciamos el contador de días al principio del mes
-            mesesActuales++;
-            if (mesesActuales > 12) {
-                // Si nos pasamos de diciembre, avanzamos al siguiente año y reiniciamos el contador de meses
-                mesesActuales = 1;
-                anyosActuales++;
-            }
-        }
+    for(int i = 0; i < dias; i++){
+        tcalendario++; 
     }
 
-    // Modificamos el objeto resultado con los nuevos valores de día, mes y año
-    resultado.ModFecha(diasActuales, mesesActuales, anyosActuales);
-
-    return resultado;
+    return tcalendario;  
 }
 
 TCalendario TCalendario::operator-(int dias){
-    TCalendario resultado(*this); // Creamos una copia del objeto actual
-
-    // Restamos los días
-    int diasActuales = Dia(); // Obtenemos el día actual
-    int mesesActuales = Mes(); // Obtenemos el mes actual
-    int anyosActuales = Anyo(); // Obtenemos el año actual
-
-    while (dias > 0) {
-        // Si los días a restar son menores o iguales que los días actuales
-        if (dias <= diasActuales) {
-            diasActuales -= dias;
-            break;
-        } else {
-            // Si no, restamos los días actuales y avanzamos al mes anterior
-            dias -= diasActuales + 1; // Restamos los días que ya hemos restado más el día actual
-            mesesActuales--;
-            if (mesesActuales < 1) {
-                // Si nos pasamos de enero, retrocedemos al año anterior y reiniciamos el contador de meses
-                mesesActuales = 12;
-                anyosActuales--;
-            }
-            // Determinamos el máximo de días para el mes anterior
-            int maxDiasMesAnterior = 31;
-            if (mesesActuales == 2) {
-                maxDiasMesAnterior = ((anyosActuales % 4 == 0 && anyosActuales % 100 != 0) || (anyosActuales % 400 == 0)) ? 29 : 28;
-            } else if (mesesActuales == 4 || mesesActuales == 6 || mesesActuales == 9 || mesesActuales == 11) {
-                maxDiasMesAnterior = 30;
-            }
-            diasActuales = maxDiasMesAnterior;
-        }
+    TCalendario tcalendario(*this);
+    
+    for(int i = 0; i < dias; i++){
+        tcalendario--;
     }
 
-    // Modificamos el objeto resultado con los nuevos valores de día, mes y año
-    resultado.ModFecha(diasActuales, mesesActuales, anyosActuales);
+    if(!EsFechaValida(tcalendario.dia, tcalendario.mes, tcalendario.anyo)){
+        tcalendario.~TCalendario();
+    }
 
-    return resultado;
+    return tcalendario; 
 }
 
 // Sobrecarga del operador de incremento (postincremento)
-TCalendario TCalendario::operator++(int) {
-    TCalendario copia(*this); // Hacemos una copia del objeto actual
-    *this = *this + 1; // Utilizamos el operador de suma para incrementar la fecha en un día
-    return copia; // Devolvemos la copia del objeto antes de incrementarlo
+TCalendario TCalendario::operator++(int dias) {
+    TCalendario tcalendario(*this);
+    if(mes == 2){
+        if(dia ==29 && EsBisiesto(anyo)){
+            dia = 1;
+            mes ++;             
+        }
+        else if(dia==28 && !EsBisiesto(anyo)){
+            dia = 1;
+            mes++;
+        }
+        else{
+            dia++;
+        }        
+    }
+    else if(mes == 12 ){
+        if (dia == 31){
+            dia = 1;
+            anyo++;
+            mes = 1;
+            
+        }
+        else{
+            dia++;
+        }
+    }
+    else if(mes ==4|| mes ==6 || mes==9 || mes==11){
+        if(dia==30){
+            mes ++;
+            dia=1;
+        }
+        else{
+            dia ++;
+        }
+    }
+    else if(mes ==1|| mes ==3 || mes==5 || mes==7 ||mes ==8 ||mes ==10 ){
+        if(dia==31){
+            dia=1;
+            mes ++;
+            
+        }
+        else{
+            dia ++;
+        }
+    }
+    return tcalendario;
 }
 
 // Sobrecarga del operador de incremento (preincremento)
 TCalendario& TCalendario::operator++() {
     *this = *this + 1; // Utilizamos el operador de suma para incrementar la fecha en un día
+
+    // Verificar si la fecha resultante sigue siendo válida
+    if (!EsFechaValida(dia, mes, anyo)) {
+        *this = TCalendario(); // Restauramos el valor original si la fecha no es válida
+    }
+
     return *this; // Devolvemos una referencia al objeto actual
 }
 
 // Sobrecarga del operador de decremento (postdecremento)
-TCalendario TCalendario::operator--(int) {
-    TCalendario copia(*this); // Hacemos una copia del objeto actual
-    *this = *this - 1; // Utilizamos el operador de resta para decrementar la fecha en un día
-    return copia; // Devolvemos la copia del objeto antes de decrementarlo
+TCalendario TCalendario::operator--(int dias) {
+    TCalendario tcalendario(*this);
+    dia--;
+    if(dia == 0){
+        mes--;
+        if(mes == 0){
+            mes = 12;
+            anyo--;
+        }
+        if(mes == 2 && !EsBisiesto(this->anyo))
+            dia = 28;
+        else if(mes == 2 && EsBisiesto(this->anyo))
+            dia = 29;
+        else if(mes == 1 || mes == 3 || mes == 5 || mes == 7 || mes == 8 ||
+                mes == 10 || mes == 12)
+            dia = 31;
+        else dia = 30;
+    }
+
+    if(!EsFechaValida(this->dia, this->mes, this->anyo)){
+        this->~TCalendario();
+    }
+
+    return tcalendario;
 }
 
 // Sobrecarga del operador de decremento (predecremento)
 TCalendario& TCalendario::operator--() {
     *this = *this - 1; // Utilizamos el operador de resta para decrementar la fecha en un día
+
+    // Verificar si la fecha resultante sigue siendo válida
+    if (!EsFechaValida(dia, mes, anyo)) {
+        *this = TCalendario(); // Restauramos el valor original si la fecha no es válida
+    }
+
     return *this; // Devolvemos una referencia al objeto actual
 }
 
@@ -260,6 +303,30 @@ char *TCalendario::Mensaje(){
     return this->mensaje;
 }
 
+ostream& operator<<(ostream &s, const TCalendario &obj){
+
+    if(obj.dia < 10)
+        s << "0" << obj.dia;
+    else s << obj.dia;
+
+    s << "/";
+
+    if(obj.mes < 10)
+        s << "0" << obj.mes;
+    else s << obj.mes;
+
+    s << "/";
+    s << obj.anyo << " ";
+    s << "\"";
+    
+    if(obj.mensaje != NULL)
+        s << obj.mensaje;
+    
+    s << "\"";
+    
+    return s;
+}
+
 bool TCalendario::EsFechaValida(int d, int m, int a) {
     if (a < 1900)
         return false;
@@ -271,7 +338,7 @@ bool TCalendario::EsFechaValida(int d, int m, int a) {
     switch (m) {
         case 2:
             // Comprobar si el año es bisiesto
-            max_dias = ((a % 4 == 0 && a % 100 != 0) || (a % 400 == 0)) ? 29 : 28;
+            max_dias = (EsBisiesto(a)) ? 29 : 28;
             break;
         case 4:
         case 6:
@@ -288,4 +355,8 @@ bool TCalendario::EsFechaValida(int d, int m, int a) {
         return false;
 
     return true;
+}
+
+bool TCalendario::EsBisiesto(int a) {
+    return ((a % 4 == 0 && a % 100 != 0) || (a % 400 == 0));
 }
