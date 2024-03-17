@@ -67,13 +67,26 @@ TCalendario::~TCalendario() {
     this->mensaje=NULL;
 }
 
-TCalendario& TCalendario::operator=(const TCalendario& calendario){
-    this->~TCalendario();
-    this->dia=calendario.dia;
-    this->mes=calendario.mes;
-    this->anyo=calendario.anyo;
-    this->mensaje=calendario.mensaje;
+TCalendario& TCalendario::operator=(const TCalendario& calendario) {
+    // Protección contra autoasignación
+    if (this != &calendario) {
+        // Copiar los datos del calendario pasado al actual
+        this->dia = calendario.dia;
+        this->mes = calendario.mes;
+        this->anyo = calendario.anyo;
 
+        // Liberar la memoria asignada previamente al mensaje
+        delete[] this->mensaje;
+
+        // Copiar el mensaje si el calendario pasado tiene uno
+        if (calendario.mensaje != nullptr) {
+            this->mensaje = new char[strlen(calendario.mensaje) + 1];
+            strcpy(this->mensaje, calendario.mensaje);
+        } else {
+            // Establecer el mensaje como nullptr si el calendario pasado no tiene uno
+            this->mensaje = nullptr;
+        }
+    }
     return *this;
 }
 
@@ -85,7 +98,7 @@ TCalendario TCalendario::operator+(int dias){
         tcalendario++; 
     }
 
-    return tcalendario;  
+    return tcalendario;
 }
 
 TCalendario TCalendario::operator-(int dias){
@@ -102,65 +115,32 @@ TCalendario TCalendario::operator-(int dias){
     return tcalendario; 
 }
 
+// Función privada para incrementar la fecha
+void TCalendario::IncrementarFecha() {
+    int diasEnMes[] = {0, 31, 28 + EsBisiesto(anyo), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    
+    dia++;
+    if (dia > diasEnMes[mes]) {
+        dia = 1;
+        mes++;
+        if (mes > 12) {
+            mes = 1;
+            anyo++;
+        }
+    }
+}
+
 // Sobrecarga del operador de incremento (postincremento)
 TCalendario TCalendario::operator++(int dias) {
     TCalendario tcalendario(*this);
-    if(mes == 2){
-        if(dia ==29 && EsBisiesto(anyo)){
-            dia = 1;
-            mes ++;             
-        }
-        else if(dia==28 && !EsBisiesto(anyo)){
-            dia = 1;
-            mes++;
-        }
-        else{
-            dia++;
-        }        
-    }
-    else if(mes == 12 ){
-        if (dia == 31){
-            dia = 1;
-            anyo++;
-            mes = 1;
-            
-        }
-        else{
-            dia++;
-        }
-    }
-    else if(mes ==4|| mes ==6 || mes==9 || mes==11){
-        if(dia==30){
-            mes ++;
-            dia=1;
-        }
-        else{
-            dia ++;
-        }
-    }
-    else if(mes ==1|| mes ==3 || mes==5 || mes==7 ||mes ==8 ||mes ==10 ){
-        if(dia==31){
-            dia=1;
-            mes ++;
-            
-        }
-        else{
-            dia ++;
-        }
-    }
+    IncrementarFecha();
     return tcalendario;
 }
 
 // Sobrecarga del operador de incremento (preincremento)
 TCalendario& TCalendario::operator++() {
-    *this = *this + 1; // Utilizamos el operador de suma para incrementar la fecha en un día
-
-    // Verificar si la fecha resultante sigue siendo válida
-    if (!EsFechaValida(dia, mes, anyo)) {
-        *this = TCalendario(); // Restauramos el valor original si la fecha no es válida
-    }
-
-    return *this; // Devolvemos una referencia al objeto actual
+    IncrementarFecha();
+    return *this;
 }
 
 // Sobrecarga del operador de decremento (postdecremento)
@@ -274,13 +254,21 @@ bool TCalendario::operator>(const TCalendario& otro) const {
 
 // Sobrecarga del operador <; (ver ACLARACIÓN sobre ORDENACIÓN)
 bool TCalendario::operator<(const TCalendario& otro) const {
+    if (*this==otro)
+    {
+        return false;
+    }
+    
     // La comparación de < es inversa a la de >
-    return otro > *this; // Simplemente utilizamos el operador > y lo invertimos
+    else{
+        return otro > *this; // Simplemente utilizamos el operador > y lo invertimos
+    }
+    
 }
 
 //TCalendario vacío
 bool TCalendario::EsVacio(){
-    return (this->dia == 1 && this->mes == 1 && this->anyo == 1900 && this->mensaje == nullptr);
+    return (this->dia == 1 && this->mes == 1 && this->anyo == 1900 && this->mensaje == NULL);
 }
 
 // Devuelve el día del calendario;

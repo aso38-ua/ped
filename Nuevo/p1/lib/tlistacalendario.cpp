@@ -32,7 +32,7 @@ TNodoCalendario &TNodoCalendario::operator=(const TNodoCalendario &nodo) {
 
 
 TListaPos::TListaPos(){
-    this->pos = NULL;
+    this->pos = nullptr;
 }
 
 TListaPos::TListaPos(const TListaPos &obj){

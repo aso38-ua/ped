@@ -1,6 +1,7 @@
 #ifndef TVECTORCALENDARIO_H
 #define TVECTORCALENDARIO_H
 
+#include <iostream>
 #include <sstream>
 #include "tcalendario.h"
 
@@ -9,8 +10,9 @@ private:
     TCalendario *c; // Array de TCalendario
     int tamano; // Tamaño del vector
     TCalendario error; // TCalendario para devolver en caso de error
-    bool comprobarFecha(int, int, int);
-    bool bisiesto(int);
+    bool EsFechaValida(int d, int m, int a);
+    bool EsBisiesto(int);
+
 
 public:
     // Constructor por defecto
@@ -44,7 +46,7 @@ public:
     int Tamano() const;
 
     // Cantidad de posiciones OCUPADAS (no vacías) en el vector
-    int Ocupadas() const;
+    int Ocupadas();
 
     // Devuelve TRUE si existe el calendario en el vector
     bool ExisteCal(const TCalendario&) const;

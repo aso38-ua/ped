@@ -14,7 +14,8 @@ private:
     int anyo;
     char* mensaje;
     bool EsFechaValida(int d, int m, int a);
-    bool EsBisiesto(int); 
+    bool EsBisiesto(int);
+    void IncrementarFecha();
 
 public:
     //Constructor por defecto: inicializa dia, mes y anyo a 1/1/1900 y mensaje a NULL

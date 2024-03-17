@@ -2,33 +2,30 @@
 
 using namespace std;
 
-#include "tcalendario.h"
-#include "tlistacalendario.h"
+#include "tvectorcalendario.h"
 
 int
 main(void)
 {
-  TCalendario a(1, 1, 1977, (char*) "uno");
-  TCalendario b(1, 1, 1980, (char*) "dos");
-  TListaCalendario l1;
+   TVectorCalendario a(3), b(3);
+   TCalendario ca1(1,1,2006, (char*) "uno"), ca2(1,2,2006, (char*) "dos"), ca3(1,3,2006, (char*) "tres");
+   
+   b[1] = ca1;
+   b[2] = ca2;
+   b[3] = ca3;
+   
+   cout << "a=" << a << endl;
+   cout << "b=" << b << endl;
 
-  if(l1.EsVacia())
-    cout << "Lista vacia" << endl;
-  else
-    cout << "Lista no vacia" << endl;
-  
-  l1.Insertar(b);
-  cout << l1.Obtener(l1.Primera()) << endl;
-  
-  l1.Insertar(a);
-  cout << l1.Obtener(l1.Primera()) << endl;
+   a = b;
+   
+   cout << "a=" << a << endl;
+   cout << "b=" << b << endl;
 
-  cout << "l1 = " << l1 << endl;
-  
-  if(l1.EsVacia())
-    cout << "Lista vacia" << endl;
-  else
-    cout << "Lista no vacia" << endl;
-  
-  return 0;
+   b.Redimensionar(5);
+
+   cout << "a=" << a << endl;
+   cout << "b=" << b << endl;
+   
+   return 0;
 }
