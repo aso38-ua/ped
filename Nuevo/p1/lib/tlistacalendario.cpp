@@ -129,6 +129,7 @@ TListaCalendario::~TListaCalendario(){
     }
 }
 
+// Sobrecarga del operador asignación
 TListaCalendario & TListaCalendario::operator=(const TListaCalendario &obj){
     if(this != &obj){
         this->~TListaCalendario();
