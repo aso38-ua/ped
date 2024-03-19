@@ -4,10 +4,22 @@ using namespace std;
 #include "tlistacalendario.h"
 
 // Constructor por defecto
-TNodoCalendario::TNodoCalendario() : c(), siguiente(nullptr) {}
+TNodoCalendario::TNodoCalendario() {
+    this->c=TCalendario();
+    siguiente = nullptr;
+}
 
 // Constructor de copia
-TNodoCalendario::TNodoCalendario(const TNodoCalendario &nodo) : c(nodo.c), siguiente(nodo.siguiente) {}
+TNodoCalendario::TNodoCalendario(const TNodoCalendario &nodo) {
+    if (!nodo.c.EsVacio()) { // Verificar si el nodo fuente no está vacío
+        this->c = nodo.c;
+    } else {
+        // Si el nodo fuente está vacío, se crea un nuevo TCalendario vacío
+        this->c = TCalendario();
+    }
+    this->siguiente = nodo.siguiente;
+}
+
 
 // Destructor
 TNodoCalendario::~TNodoCalendario() {
@@ -17,82 +29,100 @@ TNodoCalendario::~TNodoCalendario() {
 
 // Sobrecarga del operador asignación
 TNodoCalendario &TNodoCalendario::operator=(const TNodoCalendario &nodo) {
-    if (this != &nodo) { // Evitar autoasignación
-        c = nodo.c;
-        siguiente = nodo.siguiente;
+    if (this != &nodo) {
+        if (!nodo.c.EsVacio()) { // Verificar si el nodo fuente no está vacío
+            this->c = nodo.c;
+        } else {
+            // Si el nodo fuente está vacío, se asigna un TCalendario vacío
+            this->c = TCalendario();
+        }
+        this->siguiente = nodo.siguiente;
     }
     return *this;
 }
 
-
-
-
-
-
-
-
+// Constructor por defecto
 TListaPos::TListaPos(){
     this->pos = nullptr;
 }
 
-TListaPos::TListaPos(const TListaPos &obj){
-    this->pos = obj.pos;
+// Constructor de copia
+TListaPos::TListaPos(const TListaPos &obj) {
+    if (obj.pos == nullptr) {
+        this->pos = nullptr;
+    } else {
+        TNodoCalendario *nodoOriginal = obj.pos;
+        TNodoCalendario *nodoNuevo = new TNodoCalendario(*nodoOriginal); // Copia el nodo
+        this->pos = nodoNuevo;
+        
+        // Copiar el resto de la lista
+        TNodoCalendario *nodoActual = this->pos;
+        nodoOriginal = nodoOriginal->siguiente;
+        while (nodoOriginal != nullptr) {
+            nodoNuevo = new TNodoCalendario(*nodoOriginal); // Copia el nodo
+            nodoActual->siguiente = nodoNuevo;
+            nodoActual = nodoActual->siguiente;
+            nodoOriginal = nodoOriginal->siguiente;
+        }
+    }
 }
 
+//Destructor
 TListaPos::~TListaPos(){
-    this->pos = NULL;
+    this->pos = nullptr;
 }
 
+// Sobrecarga del operador asignación 
 TListaPos &  TListaPos::operator=(const TListaPos &obj){
     if(this != &obj){
         this->pos = obj.pos;
     }
-    return (*this);
+    return *this;
 }
 
+// Sobrecarga del operador igualdad
 bool TListaPos::operator==(const TListaPos &obj) const{
     if(this->pos == obj.pos)
         return true;
     return false;
 }
 
+// Sobrecarga del operador desigualdad 
 bool TListaPos::operator!=(const TListaPos &obj) const{ 
     return !(*this == obj);
 }
 
+// Devuelve la posición siguiente
 TListaPos TListaPos::Siguiente() const{
     TListaPos lp;
-    //Si la posición actual es la última devuelve un TListaPos vacio
-    if(this->pos->siguiente != NULL)
+    if(this->pos->siguiente != nullptr) // Si la posición actual no es la última, asigna el siguiente nodo
         lp.pos = this->pos->siguiente;
     return lp;
 }
 
-bool TListaPos::EsVacia()const {
-    if(this->pos == NULL)
-        return true;
-    return false;
+// Posición vacía
+bool TListaPos::EsVacia() const {
+    return (this->pos == nullptr);
 }
 
-
-
-
-
+// Constructor por defecto
 TListaCalendario::TListaCalendario(){
-    this->primero = NULL;
+    this->primero = nullptr;
 }
 
-TListaCalendario::TListaCalendario(const TListaCalendario &obj){
-   this->primero = NULL;
-    for(TListaPos i = obj.Primera(); !i.EsVacia(); i = i.Siguiente()){ 
+// Constructor de copia
+TListaCalendario::TListaCalendario(const TListaCalendario &lista){
+   this->primero = nullptr;
+    for(TListaPos i = lista.Primera(); !i.EsVacia(); i = i.Siguiente()){ 
             this->Insertar(i.pos->c);
     }
 }
 
+//Destructor
 TListaCalendario::~TListaCalendario(){
     TNodoCalendario *aux;
 
-    while (this->primero != NULL){
+    while (this->primero != nullptr){
         aux = this->primero->siguiente;
         delete this->primero;
         this->primero = aux;
@@ -158,22 +188,12 @@ bool TListaCalendario::Insertar(const TCalendario &obj){
 
         do{
             if(explorado == this->primero && nuevoNodo->c < explorado->c){
-                /*  Para insertar un nodo en la primera posicion debemos
-                    indicar que su siguiente era el primero de la lista
-                    en su estado anterior, he indicarle a la lista que pasa
-                    a ser el primero
-                    El explorado->siguiente sigue siendo NULL
-                */
+
                 nuevoNodo->siguiente = explorado;
                 this->primero = nuevoNodo;
                 return true;
             }
 
-            /*  Detectaremos una inserción a mitad de la lista cuando el elemento siguiente
-                sea mayor al que queremos insertar. Entonces al elemento a insertar, su siguiente
-                será el siguiente del que estamos analizando ahora. Y el siguiente de ahora
-                seremos nosotros.
-            */
             else if(explorado->siguiente != NULL && explorado->siguiente->c > nuevoNodo->c){
                 nuevoNodo->siguiente = explorado->siguiente;
                 explorado->siguiente = nuevoNodo;
@@ -190,13 +210,12 @@ bool TListaCalendario::Insertar(const TCalendario &obj){
             explorado = explorado->siguiente;
         }while(explorado != NULL);
 
-        return false; //¿?
+        return false;
     }
     else return false;
 }
 
 //Busca y borra el elemento
-//https://www.youtube.com/watch?v=mQOtpTlw_7Q&ab_channel=Programaci%C3%B3nDesdeCero
 bool TListaCalendario::Borrar(const TCalendario &obj){
     TNodoCalendario *aux = this->primero;
     TNodoCalendario *aEliminar;

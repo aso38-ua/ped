@@ -267,7 +267,7 @@ bool TCalendario::operator<(const TCalendario& otro) const {
 }
 
 //TCalendario vacío
-bool TCalendario::EsVacio(){
+bool TCalendario::EsVacio() const{
     return (this->dia == 1 && this->mes == 1 && this->anyo == 1900 && this->mensaje == NULL);
 }
 

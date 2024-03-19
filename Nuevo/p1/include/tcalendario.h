@@ -54,7 +54,7 @@ public:
     // Sobrecarga del operador <; (ver ACLARACIÓN sobre ORDENACIÓN)
     bool operator<(const TCalendario&) const;
     //TCalendario vacío
-    bool EsVacio();
+    bool EsVacio() const;
     // Devuelve el día del calendario;
     int Dia();
     // Devuelve el mes del calendario;
