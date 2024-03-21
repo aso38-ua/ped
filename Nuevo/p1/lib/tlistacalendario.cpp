@@ -195,25 +195,39 @@ TListaCalendario TListaCalendario::operator- (TListaCalendario &obj) {
 }
 
 // Inserta el elemento en la posición que le corresponda dentro de la lista
-bool TListaCalendario::Insertar(const TCalendario &obj) {
-    TNodoCalendario *nuevoNodo = new TNodoCalendario();
-    nuevoNodo->c = obj;
+bool TListaCalendario::Insertar(const TCalendario &cal) {
+    // Verificar si el calendario ya existe en la lista
+    if (Buscar(cal)) {
+        return false; // Devolver false indicando que no se insertó el duplicado
+    }
 
-    if (this->EsVacia() || obj < this->primero->c) {
+    TNodoCalendario *nuevoNodo = new TNodoCalendario();
+    nuevoNodo->c = cal;
+
+    // Insertar el nuevo nodo al principio de la lista si está vacía
+    if (this->EsVacia()) {
+        this->primero = nuevoNodo;
+        return true;
+    }
+
+    // Insertar el nuevo nodo al principio de la lista si es menor que el primer calendario
+    if (cal < this->primero->c) {
         nuevoNodo->siguiente = this->primero;
         this->primero = nuevoNodo;
         return true;
     }
 
     TNodoCalendario *explorado = this->primero;
-    while (explorado->siguiente != nullptr && explorado->siguiente->c < obj) {
+    while (explorado->siguiente != nullptr && explorado->siguiente->c < cal) {
         explorado = explorado->siguiente;
     }
 
+    // Insertar el nuevo nodo en la posición correcta
     nuevoNodo->siguiente = explorado->siguiente;
     explorado->siguiente = nuevoNodo;
     return true;
 }
+
 
 // Busca y borra el elemento
 bool TListaCalendario::Borrar(const TCalendario &obj) {
@@ -259,17 +273,18 @@ bool TListaCalendario::Borrar(int dia, int mes, int anyo) {
     // Calendario límite para comparar
     TCalendario limite(dia, mes, anyo, nullptr);
 
-    while (aux != nullptr && aux->c < limite) {
+    while (aux != nullptr) {
         if (aux->c == limite) {
             // Borrar nodo actual
             if (anterior != nullptr) {
                 anterior->siguiente = aux->siguiente;
+                delete aux;
+                aux = anterior->siguiente;
             } else {
                 this->primero = aux->siguiente;
+                delete aux;
+                aux = this->primero;
             }
-            TNodoCalendario *aEliminar = aux;
-            aux = aux->siguiente;
-            delete aEliminar;
             borrado = true;
         } else {
             // Avanzar al siguiente nodo
@@ -280,6 +295,8 @@ bool TListaCalendario::Borrar(int dia, int mes, int anyo) {
 
     return borrado;
 }
+
+
 
 // Devuelve true si la lista está vacía, false en caso contrario
 bool TListaCalendario::EsVacia() const {
