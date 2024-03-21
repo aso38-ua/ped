@@ -130,207 +130,197 @@ TListaCalendario::~TListaCalendario(){
 }
 
 // Sobrecarga del operador asignación
-TListaCalendario & TListaCalendario::operator=(const TListaCalendario &obj){
-    if(this != &obj){
-        this->~TListaCalendario();
-        for(TListaPos i = obj.Primera(); !i.EsVacia(); i = i.Siguiente()){ 
+TListaCalendario & TListaCalendario::operator=(const TListaCalendario &obj) {
+    if (this != &obj) {
+        // Limpia la lista actual antes de la asignación
+        this->Vaciar();
+
+        // Copia los elementos de la lista obj
+        for (TListaPos i = obj.Primera(); !i.EsVacia(); i = i.Siguiente()) { 
             this->Insertar(i.pos->c);
         }   
     }
-    return (*this);
+    return *this;
 }
 
-bool TListaCalendario::operator==(TListaCalendario &obj){
+// Función para vaciar la lista
+void TListaCalendario::Vaciar() {
+    TNodoCalendario *aux;
+
+    while (this->primero != nullptr) {
+        aux = this->primero->siguiente;
+        delete this->primero;
+        this->primero = aux;
+    }
+}
+
+// Sobrecarga del operador igualdad 
+bool TListaCalendario::operator==(const TListaCalendario &obj) const {
     TListaPos actual = this->Primera();
     TListaPos otra = obj.Primera();
 
-    if(this->Longitud() == obj.Longitud()){
-        do{
-            if(!actual.EsVacia() && !otra.EsVacia()){
-                if(actual.pos->c != otra.pos->c)
-                    return false;
-                actual = actual.Siguiente();
-                otra = otra.Siguiente();
-            }
-        }while(!actual.EsVacia());
-
-        return true;
+    // Itera sobre ambas listas y compara sus elementos
+    while (!actual.EsVacia() && !otra.EsVacia()) {
+        if (actual.pos->c != otra.pos->c) {
+            return false;
+        }
+        actual = actual.Siguiente();
+        otra = otra.Siguiente();
     }
-    return false;
+
+    // Verifica si ambas listas llegaron al final simultáneamente
+    return actual.EsVacia() && otra.EsVacia();
 }
 
-TListaCalendario TListaCalendario::operator+ (TListaCalendario &obj){
-    TListaCalendario *resultado = new TListaCalendario(*this);
+// Sobrecarga del operador suma
+TListaCalendario TListaCalendario::operator+ (TListaCalendario &obj) {
+    TListaCalendario resultado(*this); // Crear una copia de la lista actual
+
+    // Insertar los elementos de la lista obj en la lista resultado
     for(TListaPos i = obj.Primera(); !i.EsVacia(); i = i.Siguiente())
-        resultado->Insertar(i.pos->c);
-    return (*resultado);
+        resultado.Insertar(i.pos->c);
+
+    return resultado;
 }
 
-TListaCalendario TListaCalendario::operator- (TListaCalendario &obj){
-    TListaCalendario *resultado = new TListaCalendario(*this);
+// Sobrecarga del operador resta
+TListaCalendario TListaCalendario::operator- (TListaCalendario &obj) {
+    TListaCalendario resultado(*this); // Crear una copia de la lista actual
+
+    // Borrar los elementos de la lista obj de la lista resultado
     for(TListaPos i = obj.Primera(); !i.EsVacia(); i = i.Siguiente())
-        resultado->Borrar(i.pos->c);
-    return (*resultado);
+        resultado.Borrar(i.pos->c);
+
+    return resultado;
 }
 
-bool TListaCalendario::Insertar(const TCalendario &obj){
-    TNodoCalendario * nuevoNodo = new TNodoCalendario();
+// Inserta el elemento en la posición que le corresponda dentro de la lista
+bool TListaCalendario::Insertar(const TCalendario &obj) {
+    TNodoCalendario *nuevoNodo = new TNodoCalendario();
     nuevoNodo->c = obj;
 
-    if(this->EsVacia()){  
-        nuevoNodo->siguiente = NULL;    //No hay siguiente nodo
+    if (this->EsVacia() || obj < this->primero->c) {
+        nuevoNodo->siguiente = this->primero;
         this->primero = nuevoNodo;
         return true;
     }
-    else if(!this->Buscar(obj)){
 
-        TNodoCalendario *explorado = new TNodoCalendario();
-        explorado = this->primero;
-
-        do{
-            if(explorado == this->primero && nuevoNodo->c < explorado->c){
-
-                nuevoNodo->siguiente = explorado;
-                this->primero = nuevoNodo;
-                return true;
-            }
-
-            else if(explorado->siguiente != NULL && explorado->siguiente->c > nuevoNodo->c){
-                nuevoNodo->siguiente = explorado->siguiente;
-                explorado->siguiente = nuevoNodo;
-                return true;
-            }
-
-            //Inserción al final de la lista
-            else if(explorado->siguiente == NULL) {
-                nuevoNodo->siguiente = NULL;
-                explorado->siguiente = nuevoNodo;
-                return true;
-            }
-
-            explorado = explorado->siguiente;
-        }while(explorado != NULL);
-
-        return false;
+    TNodoCalendario *explorado = this->primero;
+    while (explorado->siguiente != nullptr && explorado->siguiente->c < obj) {
+        explorado = explorado->siguiente;
     }
-    else return false;
+
+    nuevoNodo->siguiente = explorado->siguiente;
+    explorado->siguiente = nuevoNodo;
+    return true;
 }
 
-//Busca y borra el elemento
-bool TListaCalendario::Borrar(const TCalendario &obj){
-    TNodoCalendario *aux = this->primero;
-    TNodoCalendario *aEliminar;
+// Busca y borra el elemento
+bool TListaCalendario::Borrar(const TCalendario &obj) {
+    if (this->EsVacia()) return false;
 
-    while(aux != NULL){  //Mientras apuntamos a un nodo..
-        //Eliminar primer nodo
-        if(this->primero->c == obj){
-            aEliminar = this->primero;
-            this->primero = this->primero->siguiente; //, si el siguiente es null la lista se queda vacia
-            delete aEliminar;
-            return true;  //Solo puede haber una ocurrencia
-        }
-
-        else{
-            //Eliminar nodo intermedio
-            if(aux->siguiente != NULL && aux->siguiente->c == obj){
-                aEliminar = aux->siguiente;
-                aux->siguiente = aux->siguiente->siguiente; //Salteamos el nodo intermedio
-                delete aEliminar;
-                return true;
-            }
-
-            else aux = aux->siguiente;
-        }  
+    if (this->primero->c == obj) {
+        TNodoCalendario *aEliminar = this->primero;
+        this->primero = this->primero->siguiente;
+        delete aEliminar;
+        return true;
     }
+
+    TNodoCalendario *explorado = this->primero;
+    while (explorado->siguiente != nullptr && explorado->siguiente->c != obj) {
+        explorado = explorado->siguiente;
+    }
+
+    if (explorado->siguiente != nullptr) {
+        TNodoCalendario *aEliminar = explorado->siguiente;
+        explorado->siguiente = explorado->siguiente->siguiente;
+        delete aEliminar;
+        return true;
+    }
+
     return false;
 }
 
-//Borra el elemento que ocupa la posición indicada
-bool TListaCalendario::Borrar(const TListaPos &obj){
-    if(!obj.EsVacia()){
+// Borra el elemento que ocupa la posición indicada
+bool TListaCalendario::Borrar(const TListaPos &obj) {
+    if (!obj.EsVacia()) {
         TCalendario c = obj.pos->c;
-        if(Borrar(c))
-            return true;
-        else return false;
+        return Borrar(c);
     }
-    else return false;    
+    return false;
 }
 
 //Borra todos los Calendarios que ocupa la posición indicada
-bool TListaCalendario::Borrar(int dia, int mes,int anyo){
+bool TListaCalendario::Borrar(int dia, int mes, int anyo) {
     TNodoCalendario *aux = this->primero;
-    TNodoCalendario *aEliminar;
+    TNodoCalendario *anterior = nullptr;
     bool borrado = false;
 
+    // Calendario límite para comparar
+    TCalendario limite(dia, mes, anyo, nullptr);
 
-    TCalendario *limite = new TCalendario(dia,mes,anyo, NULL);
-    while(aux != NULL){  //Mientras apuntamos a un nodo..
-
-        /*  Hay que tener en cuenta que para usar el operador < se valora
-            el contenido del char, por lo que le asignaremos el mensaje de 
-            cada una de las fechas de forma que cuando coincidan las fechas
-            lo haga el objeto en su totalidad
-        */
-        limite->ModMensaje(aux->c.Mensaje());   
-
-        //Eliminar primer nodo
-        if(this->primero->c < (*limite)){   //Desreferenciamos el puntero
-            aEliminar = this->primero;
-            this->primero = this->primero->siguiente; //, si el siguiente es null la lista se queda vacia
-            aux = aux->siguiente;
-
-            delete aEliminar;
-            borrado = true;            
-        }
-
-        else{
-            //Eliminar nodo intermedio
-            if(aux->siguiente != NULL && aux->siguiente->c < (*limite)){
-                aEliminar = aux->siguiente;
-                aux->siguiente = aux->siguiente->siguiente; //Salteamos el nodo intermedio
-
-                delete aEliminar;
-                borrado = true;
+    while (aux != nullptr && aux->c < limite) {
+        if (aux->c == limite) {
+            // Borrar nodo actual
+            if (anterior != nullptr) {
+                anterior->siguiente = aux->siguiente;
+            } else {
+                this->primero = aux->siguiente;
             }
-
-            else if(aux->c == (*limite))
-                break;
-            
-            else aux = aux->siguiente;
-        }  
+            TNodoCalendario *aEliminar = aux;
+            aux = aux->siguiente;
+            delete aEliminar;
+            borrado = true;
+        } else {
+            // Avanzar al siguiente nodo
+            anterior = aux;
+            aux = aux->siguiente;
+        }
     }
+
     return borrado;
 }
 
-bool TListaCalendario::EsVacia() const{
-    if(this->primero == NULL)
-        return true;
-    return false;
+// Devuelve true si la lista está vacía, false en caso contrario
+bool TListaCalendario::EsVacia() const {
+    return (this->primero == nullptr);
 }
 
-TCalendario TListaCalendario::Obtener(const TListaPos &obj) const{
-    for(TListaPos i = this->Primera(); !i.EsVacia(); i = i.Siguiente())
-        if(i == obj)
+// Obtiene el elemento que ocupa la posición indicada
+
+TCalendario TListaCalendario::Obtener(const TListaPos &obj) const {
+    TListaPos i = this->Primera();
+    while (!i.EsVacia()) {
+        if (i == obj) {
             return i.pos->c;
-
-    return TCalendario();
+        }
+        i = i.Siguiente();
+    }
+    return TCalendario(); // Si no se encuentra, se devuelve un calendario vacío
 }
 
-bool TListaCalendario::Buscar(const TCalendario &obj) const{
-    for(TListaPos i = this->Primera(); !i.EsVacia(); i = i.Siguiente())
-        if(i.pos->c == obj) //Únicamente puede haber un TCalendario (fecha+mensaje) en la lista
+// Devuelve true si el Calendario está en la lista.
+bool TListaCalendario::Buscar(const TCalendario &obj) const {
+    TListaPos i = this->Primera();
+    while (!i.EsVacia()) {
+        if (i.pos->c == obj) {
             return true;
+        }
+        i = i.Siguiente();
+    }
     return false;
 }
 
-int TListaCalendario::Longitud() const{
+// Devuelve la longitud de la lista
+int TListaCalendario::Longitud() const {
     int longitud = 0;
     for(TListaPos i = this->Primera(); !i.EsVacia(); i = i.Siguiente() )
         longitud++;
     return longitud;
 }
 
-TListaPos TListaCalendario::Primera() const{
+// Devuelve la primera posición en la lista
+TListaPos TListaCalendario::Primera() const {
     TListaPos tpos;
     if(this->EsVacia())
         return tpos;
@@ -340,50 +330,13 @@ TListaPos TListaCalendario::Primera() const{
     }
 }
 
-TListaPos TListaCalendario::Ultima() const{
+// Devuelve la última posición en la lista
+TListaPos TListaCalendario::Ultima() const {
     TListaPos ultima = this->Primera();
-    for(int i = 1; i < this->Longitud(); i++) // Es necesario inicializar el for a 1 ya que sino siempre cogerá la ultima posición que es NULL
+    while (!ultima.EsVacia() && !ultima.Siguiente().EsVacia()) {
         ultima = ultima.Siguiente();
-    return ultima;
-}
-
-TListaCalendario TListaCalendario::SumarSubl(int I_L1, int F_L1, TListaCalendario & L2, int I_L2, int F_L2){
-    TListaCalendario *L1copia = new TListaCalendario(*this);
-    TListaCalendario *L2copia = new TListaCalendario(L2);
-    TListaCalendario resultado;
-
-    *L1copia = L1copia->ExtraerRango(I_L1, F_L1);
-    *L2copia = L2copia->ExtraerRango(I_L2, F_L2);
-
-    resultado = *L1copia + *L2copia;
-    return resultado;
-}
-
-TListaCalendario TListaCalendario::ExtraerRango(int n1, int n2){
-    TListaCalendario * nuevaLista = new TListaCalendario(*this);
-    TListaCalendario listaExtraida;
-
-    if(n1 > n2)
-        return listaExtraida;
-
-    if(n1 <= 0)
-        n1 = 1;
-
-    if(n2 > this->Longitud())
-        n2 = this->Longitud();
-    
-
-    int contador = 1;
-    for(TListaPos pos = nuevaLista->Primera(); !pos.EsVacia(); pos = pos.Siguiente() ){
-        if(contador >= n1 && contador <= n2){
-            this->Borrar(pos);
-            listaExtraida.Insertar(pos.pos->c);
-        }
-        contador ++;
     }
-    nuevaLista->~TListaCalendario();
-
-    return listaExtraida;
+    return ultima;
 }
 
 ostream& operator<<(ostream &s, const TListaCalendario& obj){

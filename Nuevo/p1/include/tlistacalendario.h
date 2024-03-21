@@ -53,6 +53,7 @@ class TListaCalendario{
 
     private:
         TNodoCalendario *primero;
+        void Vaciar();
 
     public:
         TListaCalendario();
@@ -61,7 +62,7 @@ class TListaCalendario{
 
         TListaCalendario & operator=(const TListaCalendario &);
 
-        bool operator== (TListaCalendario &);
+        bool operator== (const TListaCalendario &) const;
         TListaCalendario operator+ (TListaCalendario &);
         TListaCalendario operator- (TListaCalendario &);
         
