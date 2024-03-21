@@ -356,6 +356,46 @@ TListaPos TListaCalendario::Ultima() const {
     return ultima;
 }
 
+TListaCalendario TListaCalendario::SumarSubl(int I_L1, int F_L1, TListaCalendario &L2, int I_L2, int F_L2) {
+    // Sublista de la lista invocante
+    TListaCalendario Sublista1 = this->ExtraerRango(I_L1, F_L1);
+    // Sublista de la lista pasada como parámetro
+    TListaCalendario Sublista2 = L2.ExtraerRango(I_L2, F_L2);
+
+    // Unión de ambas sublistas
+    TListaCalendario resultado;
+    resultado = Sublista1 + Sublista2;
+
+    return resultado;
+}
+
+TListaCalendario TListaCalendario::ExtraerRango(int n1, int n2) {
+    TListaCalendario listaExtraida;
+
+    if (n1 <= 0) n1 = 1; // Ajuste si n1 es menor o igual a 0
+    if (n2 > this->Longitud()) n2 = this->Longitud(); // Ajuste si n2 excede la longitud de la lista
+    if (n1 > n2) return listaExtraida; // Si n1 es mayor que n2, la sublista resultante es vacía
+
+    int contador = 1;
+    TListaPos pos = this->Primera();
+    while (!pos.EsVacia() && contador <= n2) {
+        if (contador >= n1 && contador <= n2) {
+            // Insertar en la lista extraída
+            listaExtraida.Insertar(pos.pos->c);
+        }
+        pos = pos.Siguiente(); // Avanzar al siguiente nodo
+        contador++; // Incrementar el contador de posición
+    }
+
+    return listaExtraida;
+}
+
+
+
+
+
+
+
 ostream& operator<<(ostream &s, const TListaCalendario& obj){
     s << "<";
     for(TListaPos i = obj.Primera(); !i.EsVacia(); i = i.Siguiente() ){
