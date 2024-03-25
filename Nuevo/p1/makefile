@@ -19,3 +19,5 @@ doc:
 
 clean:
 	rm -f $(OBJ) 
+
+tar:
