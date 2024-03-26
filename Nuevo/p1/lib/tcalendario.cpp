@@ -9,7 +9,7 @@ TCalendario::TCalendario(){
     this->dia=1;
     this->mes=1;
     this->anyo=1900;
-    this->mensaje=NULL;
+    this->mensaje=nullptr;
 }
 
 TCalendario::TCalendario(int dia, int mes, int anyo, char * m){
@@ -22,13 +22,13 @@ TCalendario::TCalendario(int dia, int mes, int anyo, char * m){
             this->mensaje = new char[strlen(m)+1];
             strcpy(this->mensaje, m);
         }
-        else this->mensaje = NULL;
+        else this->mensaje = nullptr;
     }
     else{
         this->dia = 1;
         this->mes = 1;
         this->anyo = 1900;
-        this->mensaje = NULL;
+        this->mensaje = nullptr;
     }
 }
 
@@ -39,18 +39,18 @@ TCalendario::TCalendario (const TCalendario& calendario){
         this->mes = calendario.mes;
         this->anyo = calendario.anyo;
 
-        if(calendario.mensaje != NULL){
+        if(calendario.mensaje != nullptr){
             this->mensaje = new char[strlen(calendario.mensaje)+1];
             strcpy(this->mensaje, calendario.mensaje);
         }
-        else this->mensaje = NULL;
+        else this->mensaje = nullptr;
     }
 
     else{
         this->dia = 1;
         this->mes = 1;
         this->anyo = 1900;
-        this->mensaje = NULL;
+        this->mensaje = nullptr;
     }
     
 }
@@ -59,12 +59,12 @@ TCalendario::~TCalendario() {
     this->dia=1;
     this->mes=1;
     this->anyo=1900;
-    if (this->mensaje!=NULL)
+    if (this->mensaje!=nullptr)
     {
         delete [] this->mensaje;
     }
     
-    this->mensaje=NULL;
+    this->mensaje=nullptr;
 }
 
 TCalendario& TCalendario::operator=(const TCalendario& calendario) {
