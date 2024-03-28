@@ -21,3 +21,4 @@ clean:
 	rm -f $(OBJ) 
 
 tar:
+	$ tar cvzf cuad1.tgz nombres.txt include/ lib/ src/ 

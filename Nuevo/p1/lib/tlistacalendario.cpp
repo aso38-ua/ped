@@ -356,6 +356,7 @@ TListaPos TListaCalendario::Ultima() const {
     return ultima;
 }
 
+// Suma de dos sublistas en una nueva lista
 TListaCalendario TListaCalendario::SumarSubl(int I_L1, int F_L1, TListaCalendario &L2, int I_L2, int F_L2) {
     // Sublista de la lista invocante
     TListaCalendario Sublista1 = this->ExtraerRango(I_L1, F_L1);
@@ -369,11 +370,12 @@ TListaCalendario TListaCalendario::SumarSubl(int I_L1, int F_L1, TListaCalendari
     return resultado;
 }
 
+// Extraer un rango de nodos de la lista
 TListaCalendario TListaCalendario::ExtraerRango(int n1, int n2) {
     TListaCalendario listaExtraida;
 
-    if (n1 <= 0) n1 = 1; // Ajuste si n1 es menor o igual a 0
-    if (n2 > this->Longitud()) n2 = this->Longitud(); // Ajuste si n2 excede la longitud de la lista
+    if (n1 <= 0) n1 = 1; // Si n1 es menor o igual a 0
+    if (n2 > this->Longitud()) n2 = this->Longitud(); // Si n2 excede la longitud de la lista
     if (n1 > n2) return listaExtraida; // Si n1 es mayor que n2, la sublista resultante es vacía
 
     int contador = 1;
