@@ -390,12 +390,6 @@ TListaCalendario TListaCalendario::ExtraerRango(int n1, int n2) {
     return listaExtraida;
 }
 
-
-
-
-
-
-
 ostream& operator<<(ostream &s, const TListaCalendario& obj){
     s << "<";
     for(TListaPos i = obj.Primera(); !i.EsVacia(); i = i.Siguiente() ){
