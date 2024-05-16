@@ -1,0 +1,6 @@
+Prueba de función Buscar:
+Elemento a buscar: 01/01/1980 "dos"
+El elemento 01/01/1980 "dos" se encontró en la lista.
+Elemento a buscar: 01/01/1990 "tres"
+El elemento 01/01/1990 "tres" no se encontró en la lista.
+

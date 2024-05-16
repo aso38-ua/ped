@@ -1,0 +1,8 @@
+Árbol 1:
+[1/1/2024] "Evento1" [2/1/2024] "Evento2" [3/1/2024] "Evento3" [4/1/2024] "Evento4" 
+Árbol 2:
+[5/1/2024] "Evento5" [6/1/2024] "Evento6" [7/1/2024] "Evento7" [8/1/2024] "Evento8" 
+Resultado de la suma de árboles:
+[1/1/2024] "Evento1" [2/1/2024] "Evento2" [3/1/2024] "Evento3" [4/1/2024] "Evento4" [5/1/2024] "Evento5" [6/1/2024] "Evento6" [7/1/2024] "Evento7" [8/1/2024] "Evento8" 
+Resultado de la resta de árboles:
+[1/1/2024] "Evento1" [2/1/2024] "Evento2" [3/1/2024] "Evento3" [4/1/2024] "Evento4" 

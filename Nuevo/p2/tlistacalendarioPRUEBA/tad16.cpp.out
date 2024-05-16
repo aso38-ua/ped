@@ -1,0 +1,5 @@
+Lista inicial:
+<01/01/2022 "Mensaje 1" 02/01/2022 "Mensaje 2" 03/01/2022 "Mensaje 3" 04/01/2022 "Mensaje 4">
+Lista tras borrar elemento en posición 2:
+<01/01/2022 "Mensaje 1" 03/01/2022 "Mensaje 3" 04/01/2022 "Mensaje 4">
+Elemento en posición 2 borrado: Sí
