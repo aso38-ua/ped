@@ -4,11 +4,14 @@ using namespace std;
 
 TNodoAVL::TNodoAVL() : item(), de(), iz(), fe(){}
 
-TNodoAVL::TNodoAVL(const TNodoAVL &nodo){
+TNodoAVL::TNodoAVL(const TNodoAVL &nodo) : item(nodo.item), iz(nodo.iz), de(nodo.de), fe(nodo.fe){}
+
+void TNodoAVL::Copia(const TNodoAVL &nodo){
+    //Usando el operador= de la clase TAVLCalendario
     this->item = nodo.item;
-    this->fe = nodo.fe;
+    this->iz = nodo.iz;
     this->de = nodo.de;
-    this->iz = nodo.iz; // Llamada al constructor de copia de TAVLCalendario
+    this->fe = nodo.fe;
 }
 
 TNodoAVL::~TNodoAVL(){}
@@ -16,7 +19,7 @@ TNodoAVL::~TNodoAVL(){}
 TNodoAVL & TNodoAVL::operator=(const TNodoAVL &nodo){
     if(this != &nodo){      //Protección contra autoasignación
         this->~TNodoAVL();
-        *this = nodo;
+        Copia(nodo);
     }
     return *this;
 }
@@ -26,10 +29,20 @@ TAVLCalendario::TAVLCalendario(){
     this->raiz = nullptr;
 }
 
+void TAVLCalendario::Copia(const TAVLCalendario &avl){
+    if(!avl.EsVacio()){
+        this->raiz = new TNodoAVL();
+        this->raiz->item = avl.raiz->item;
+        this->raiz->iz.Copia(avl.raiz->iz);
+        this->raiz->de.Copia(avl.raiz->de);
+    }
+    else this->raiz = NULL;
+}
+
 // Constructor de copia
 TAVLCalendario::TAVLCalendario(const TAVLCalendario &avl) {
-    raiz = NULL;
-    *this = avl;
+    raiz = nullptr;
+    Copia(avl);
 }
 
 // Destructor
@@ -50,7 +63,7 @@ TAVLCalendario::~TAVLCalendario(){
 TAVLCalendario & TAVLCalendario::operator= (const TAVLCalendario &avl){
     if(this != &avl){
         this->~TAVLCalendario();
-        *this=avl;
+        this->Copia(avl);
     }
 
     return *this;

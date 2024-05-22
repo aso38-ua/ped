@@ -8,29 +8,7 @@
 
 using namespace std;
 
-class TNodoAVL
-{
-    friend class TAVLCalendario;
-    private:
-        // El elemento (etiqueta) del nodo
-        TCalendario item;
-        // Subárbol izquierdo y derecho
-        TAVLCalendario iz, de;
-        // Factor de equilibrio
-        int fe;
-
-    public:
-        //Constructor por defecto
-        TNodoAVL();
-        //Constructor copia
-        TNodoAVL (const TNodoAVL &);
-        //Destructor
-        ~TNodoAVL();
-        // Sobrecarga del operador asignación
-        TNodoAVL & operator=(const TNodoAVL &);
-
-
-};
+class TNodoAVL;
 
 class TAVLCalendario
 {
@@ -39,6 +17,8 @@ class TAVLCalendario
     private:
         // Puntero al nodo raíz
         TNodoAVL *raiz;
+
+        void Copia(const TAVLCalendario &);
 
         // AUXILIAR: devuelve el recorrido en INORDEN
         void InordenAux(TVectorCalendario &, int &) const;
@@ -52,9 +32,9 @@ class TAVLCalendario
         void RotarIzquierda(TNodoAVL *&nodo);
         // Rotación simple a la derecha
         void RotarDerecha(TNodoAVL *&nodo);
-        bool TAVLCalendario::BorrarEnAVL(const TCalendario &cal, TNodoAVL *&nodo, bool &borrado, bool &decrece);
-        void TAVLCalendario::Equilibrar(TNodoAVL *&nodo);
-        TCalendario TAVLCalendario::Mayor(TNodoAVL *nodo) const;
+        bool BorrarEnAVL(const TCalendario &cal, TNodoAVL *&nodo, bool &borrado, bool &decrece);
+        void Equilibrar(TNodoAVL *&nodo);
+        TCalendario Mayor(TNodoAVL *nodo) const;
 
     public:
 
@@ -95,6 +75,32 @@ class TAVLCalendario
         TCalendario Raiz() const;
         // Sobrecarga del operador salida
         friend ostream & operator<<(ostream &, TAVLCalendario &);
+};
+
+class TNodoAVL
+{
+    friend class TAVLCalendario;
+    private:
+        // El elemento (etiqueta) del nodo
+        TCalendario item;
+        // Subárbol izquierdo y derecho
+        TAVLCalendario iz, de;
+        // Factor de equilibrio
+        int fe;
+
+        void Copia(const TNodoAVL &);
+
+    public:
+        //Constructor por defecto
+        TNodoAVL();
+        //Constructor copia
+        TNodoAVL (const TNodoAVL &);
+        //Destructor
+        ~TNodoAVL();
+        // Sobrecarga del operador asignación
+        TNodoAVL & operator=(const TNodoAVL &);
+
+
 };
 
 
