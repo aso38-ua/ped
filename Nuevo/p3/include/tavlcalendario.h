@@ -74,7 +74,7 @@ class TAVLCalendario
         // Devuelve el elemento TCalendario raíz del árbol AVL
         TCalendario Raiz() const;
         // Sobrecarga del operador salida
-        friend ostream & operator<<(ostream &, TAVLCalendario &);
+        friend ostream & operator<<(ostream &,const TAVLCalendario &);
 };
 
 class TNodoAVL
