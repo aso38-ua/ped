@@ -303,13 +303,16 @@ TVectorCalendario TAVLCalendario::Postorden() const {
     return v;
 }
 
+// Definición del operador <<
 ostream& operator<<(ostream &s, const TAVLCalendario &obj) {
     TVectorCalendario v = obj.Inorden();
+    s << "[";
     for (int i = 1; i <= v.Tamano(); ++i) {
-        s << v[i];
+        s << "(" << i << ") " << v[i];
         if (i < v.Tamano()) {
             s << ", ";
         }
     }
+    s << "]";
     return s;
 }
