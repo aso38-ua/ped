@@ -11,24 +11,35 @@ main(void)
   TCalendario c11(11,11,2000,(char *)"fecha"),c12(12,12,2000,(char *)"fecha"),c13(13,12,2000,(char *)"fecha"),c14(14,12,2000,(char *)"fecha"),c15(15,12,2000,(char *)"fecha"),c16(16,12,2000,(char *)"fecha");
   TCalendario c17(17,12,2000,(char *)"fecha"),c18(18,12,2000,(char *)"fecha"),c19(19,12,2000,(char *)"fecha"),c20(20,12,2000,(char *)"fecha");
 
-  if (a.Borrar(c1))
-	cout<<"Elemento borrado"<<endl;
-  else
-	cout<<"Elemento no borrado"<<endl;
-
+  TVectorCalendario v1,v2,v3,v4;
   
+  a.Insertar(c8);
+  a.Insertar(c12);
+  a.Insertar(c3);
+  a.Insertar(c4);
+  a.Insertar(c9);
+  a.Insertar(c14);
+  a.Insertar(c16);
+  a.Insertar(c11);
+  a.Insertar(c7);
+  a.Insertar(c6);
+  a.Insertar(c15);
   a.Insertar(c1);
+  a.Insertar(c13);
+  a.Insertar(c10);
+  a.Insertar(c2);
+  a.Insertar(c5);
+  a.Insertar(c17);
+  a.Insertar(c18);
+  a.Insertar(c19);
   
-  if (a.Borrar(c2))
-	cout<<"Elemento borrado"<<endl;
-  else
-	cout<<"Elemento no borrado"<<endl;
-	
-   if (a.Borrar(c1))
-	cout<<"Elemento borrado"<<endl;
-  else
-	cout<<"Elemento no borrado"<<endl;
-	
-  cout <<"preorden="<< a.Preorden()<< endl;
+  if (a.Buscar(c14))
+    cout<<"el elemento 14 existe"<<endl;
+ 
+  if (a.Buscar(c6))
+    cout<<"el elemento 6 existe"<<endl;
+ 
+  if (!a.Buscar(c20))
+    cout<<"el elemento 20 no existe"<<endl;
   return 0;
 }

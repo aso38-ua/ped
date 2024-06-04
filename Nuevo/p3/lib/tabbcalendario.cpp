@@ -249,6 +249,147 @@ TABBCalendario TABBCalendario::operator-(TABBCalendario &a){
     return aux;
 }
 
+TVectorCalendario TABBCalendario::ABBCamino(TListaCalendario &l){
+    TVectorCalendario v;
+
+    if(!l.EsVacia() && !this->EsVacio()){
+
+        for(TListaPos i = l.Primera(); !i.EsVacia(); i = i.Siguiente()){ 
+            //Si encontramos el elemento que toca en la lista no hacemos nada, si no existe ...
+            if(!this->Buscar(l.Obtener(i))){
+
+                //Lo insertamos en el árbol
+                this->Insertar(l.Obtener(i)); 
+
+                //Nos guardamos el elemento insertado en el ABB 
+                TCalendario buscado =  l.Obtener(i);         
+
+                //Pasamos el elemento a buscar, así como el vector
+                //El vector se ampliará ya que está pasado por referencia
+                this->ElegirSubarbol(buscado, v);
+            }
+        }
+
+        return v;
+    }
+    else{
+        return v;
+    }
+}
+
+void TABBCalendario::ElegirSubarbol(TCalendario &buscado, TVectorCalendario &v){
+        
+        //Si el elemento que buscamos es menor que la raiz...
+        if(!this->EsVacio() && buscado < this->raiz->item){
+            //Añadimos un hueco en el vector, y en él añadimos la raiz, que formará parte del camino
+            v.Redimensionar(v.Tamano() + 1);
+            v[v.Tamano()] = this->raiz->item;
+
+            //Escogemos el subarbol izquierda ya que así encontraremos el elemento en el ABB
+            this->raiz->iz.ElegirSubarbol(buscado, v);
+        }
+
+        else if(!this->EsVacio()){
+            v.Redimensionar(v.Tamano() + 1);
+            v[v.Tamano()] = this->raiz->item;
+
+            this->raiz->de.ElegirSubarbol(buscado, v);
+        }  
+}
+
+TCalendario TABBCalendario::Maximo() const {
+    if (EsVacio()) {
+        return TCalendario(); // Devuelve un calendario vacío si el árbol está vacío
+    } else if (raiz->de.EsVacio()) {
+        return raiz->item; // Si no hay subárbol derecho, la raíz es el máximo
+    } else {
+        return raiz->de.Maximo(); // Continúa buscando en el subárbol derecho
+    }
+}
+
+TCalendario TABBCalendario::Minimo() const {
+    if (EsVacio()) {
+        return TCalendario(); // Devuelve un calendario vacío si el árbol está vacío
+    } else if (raiz->iz.EsVacio()) {
+        return raiz->item; // Si no hay subárbol izquierdo, la raíz es el mínimo
+    } else {
+        return raiz->iz.Minimo(); // Continúa buscando en el subárbol izquierdo
+    }
+}
+
+int TABBCalendario::ContarNodos() const {
+    if (EsVacio()) {
+        return 0; // Si el árbol está vacío, el conteo es 0
+    } else {
+        return 1 + raiz->iz.ContarNodos() + raiz->de.ContarNodos();
+    }
+}
+
+bool TABBCalendario::Iguales(const TABBCalendario &abb) const {
+    if (EsVacio() && abb.EsVacio()) {
+        return true; // Ambos árboles están vacíos
+    } else if (!EsVacio() && !abb.EsVacio()) {
+        return raiz->item == abb.raiz->item &&
+               raiz->iz.Iguales(abb.raiz->iz) &&
+               raiz->de.Iguales(abb.raiz->de);
+    } else {
+        return false; // Uno está vacío y el otro no
+    }
+}
+
+TCalendario TABBCalendario::AncestroComun(const TCalendario &cal1, const TCalendario &cal2) const {
+    if (EsVacio()) {
+        return TCalendario(); // Devuelve un calendario vacío si el árbol está vacío
+    }
+
+    if (raiz->item > cal1 && raiz->item > cal2) {
+        return raiz->iz.AncestroComun(cal1, cal2); // Busca en el subárbol izquierdo
+    }
+
+    if (raiz->item < cal1 && raiz->item < cal2) {
+        return raiz->de.AncestroComun(cal1, cal2); // Busca en el subárbol derecho
+    }
+
+    return raiz->item; // Si uno de los valores es igual a la raíz o están en diferentes subárboles, la raíz es el ancestro común
+}
+
+int TABBCalendario::NivelNodo(const TCalendario &cal) const {
+    if (EsVacio()) {
+        return -1; // Devuelve -1 si el nodo no se encuentra
+    }
+
+    if (raiz->item == cal) {
+        return 0; // El nivel de la raíz es 0
+    }
+
+    if (raiz->item > cal) {
+        int nivel = raiz->iz.NivelNodo(cal);
+        return (nivel == -1) ? -1 : 1 + nivel; // Añade 1 al nivel del subárbol izquierdo
+    } else {
+        int nivel = raiz->de.NivelNodo(cal);
+        return (nivel == -1) ? -1 : 1 + nivel; // Añade 1 al nivel del subárbol derecho
+    }
+}
+
+bool TABBCalendario::EsSubconjunto(const TABBCalendario &abb) const {
+    if (abb.EsVacio()) {
+        return true; // Un árbol vacío es subconjunto de cualquier árbol
+    }
+
+    if (EsVacio()) {
+        return false; // Un árbol no vacío no puede ser subconjunto de un árbol vacío
+    }
+
+    if (!Buscar(abb.raiz->item)) {
+        return false; // Si la raíz del segundo árbol no está en el primero, no es subconjunto
+    }
+
+    return raiz->iz.EsSubconjunto(abb.raiz->iz) && raiz->de.EsSubconjunto(abb.raiz->de);
+}
+
+
+
+
 ostream & operator<<(ostream &os, const TABBCalendario &a){
     os << a.Inorden();
     return os;

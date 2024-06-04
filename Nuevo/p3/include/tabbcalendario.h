@@ -5,6 +5,7 @@
 #include <queue>
 #include "tcalendario.h"
 #include "tvectorcalendario.h"
+#include "tlistacalendario.h"
 using namespace std;
 
 class TNodoABB;
@@ -19,6 +20,7 @@ class TABBCalendario{
         void InordenAux(TVectorCalendario &, int &) const;
         void PreordenAux(TVectorCalendario &, int &) const;
         void PostordenAux(TVectorCalendario &, int &) const;
+        void TABBCalendario::ElegirSubarbol(TCalendario &buscado, TVectorCalendario &v);
 
     public:
         TABBCalendario();
@@ -44,6 +46,16 @@ class TABBCalendario{
 
         TABBCalendario operator+(TABBCalendario &);
         TABBCalendario operator-(TABBCalendario &);
+
+        //Examen
+        TVectorCalendario ABBCamino(TListaCalendario &l);
+        TCalendario Maximo() const;
+        TCalendario Minimo() const;
+        int ContarNodos() const;
+        bool Iguales(const TABBCalendario &abb) const;
+        TCalendario AncestroComun(const TCalendario &cal1, const TCalendario &cal2) const;
+        int TABBCalendario::NivelNodo(const TCalendario &cal) const;
+        bool TABBCalendario::EsSubconjunto(const TABBCalendario &abb) const;
 };
 
 class TNodoABB{

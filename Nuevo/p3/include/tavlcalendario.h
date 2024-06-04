@@ -27,14 +27,17 @@ class TAVLCalendario
         // AUXILIAR: devuelve el recorrido en POSTORDEN
         void PostordenAux(TVectorCalendario &, int &) const;
         // Función auxiliar para insertar un elemento en el árbol AVL
-        bool InsertarAux(const TCalendario &cal, TNodoAVL *&nodo, bool &crece);
+        bool InsertarAux(const TCalendario &, TNodoAVL *&, bool &);
         // Rotación simple a la izquierda
-        void RotarIzquierda(TNodoAVL *&nodo);
+        void RotarIzquierda(TNodoAVL *&);
         // Rotación simple a la derecha
-        void RotarDerecha(TNodoAVL *&nodo);
-        bool BorrarEnAVL(const TCalendario &cal, TNodoAVL *&nodo, bool &borrado, bool &decrece);
-        void Equilibrar(TNodoAVL *&nodo);
-        TCalendario Mayor(TNodoAVL *nodo) const;
+        void RotarDerecha(TNodoAVL *&);
+        bool BorrarEnAVL(const TCalendario &, TNodoAVL *&, bool &);
+        void Equilibrar();
+        TCalendario Ordenar() const;
+        void ActualizarFE();
+        int CalcularFE();
+        void BorrarAux(const TCalendario &, TNodoAVL *&, bool &);
 
     public:
 
