@@ -385,7 +385,7 @@ int TAVLCalendario::BuscaNodo(const TCalendario &cal) const {
 
     if (actual == nullptr) {
         return 0; // Nodo no encontrado
-    } else if (actual == raiz) {
+    } else if (actual == this->raiz) {
         return 3; // Es la raíz
     } else if (esHijoIzquierdo) {
         return 1; // Es hijo izquierdo
@@ -413,7 +413,6 @@ int* TAVLCalendario::BuscaAVL(TListaCalendario &lista) {
         return resultado;
     }
     
-
     int *resultado = new int[tamanoLista];
 
     TListaPos pos = lista.Primera();
