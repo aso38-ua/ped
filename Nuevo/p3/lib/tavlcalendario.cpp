@@ -402,10 +402,22 @@ int* TAVLCalendario::BuscaAVL(TListaCalendario &lista) {
         return nullptr;
     }
 
+    if (this->EsVacio())
+    {
+        int *resultado = new int[tamanoLista];
+        for (int i = 0; i < tamanoLista; i++)
+        {
+            resultado[i] = 0;
+        }
+        
+        return resultado;
+    }
+    
+
     int *resultado = new int[tamanoLista];
 
     TListaPos pos = lista.Primera();
-    for (int i = 0; i < tamanoLista; ++i) {
+    for (int i = 0; i < tamanoLista; i++) {
         resultado[i] = BuscaNodo(pos.pos->c); // Aquí accedemos directamente a pos->c
         pos = pos.Siguiente();
     }
