@@ -366,6 +366,53 @@ TVectorCalendario TAVLCalendario::Postorden() const {
     return v;
 }
 
+// Nuevo método para buscar la posición de un nodo en el AVL
+int TAVLCalendario::BuscaNodo(const TCalendario &cal) const {
+    TNodoAVL *actual = this->raiz;
+    TNodoAVL *padre = nullptr;
+    bool esHijoIzquierdo = false;
+
+    while (actual != nullptr && actual->item != cal) {
+        padre = actual;
+        if (cal < actual->item) {
+            esHijoIzquierdo = true;
+            actual = actual->iz.raiz;
+        } else {
+            esHijoIzquierdo = false;
+            actual = actual->de.raiz;
+        }
+    }
+
+    if (actual == nullptr) {
+        return 0; // Nodo no encontrado
+    } else if (actual == raiz) {
+        return 3; // Es la raíz
+    } else if (esHijoIzquierdo) {
+        return 1; // Es hijo izquierdo
+    } else {
+        return 2; // Es hijo derecho
+    }
+}
+
+// Función principal para buscar los nodos de la lista en el AVL
+int* TAVLCalendario::BuscaAVL(TListaCalendario &lista) {
+    int tamanoLista = lista.Longitud();
+    
+    if (tamanoLista == 0) {
+        return nullptr;
+    }
+
+    int *resultado = new int[tamanoLista];
+
+    TListaPos pos = lista.Primera();
+    for (int i = 0; i < tamanoLista; ++i) {
+        resultado[i] = BuscaNodo(pos.pos->c); // Aquí accedemos directamente a pos->c
+        pos = pos.Siguiente();
+    }
+
+    return resultado;
+}
+
 // Sobrecarga del operador <<
 ostream& operator<<(ostream &s, const TAVLCalendario &obj) {
     TVectorCalendario v = obj.Inorden();

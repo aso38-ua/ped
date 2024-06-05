@@ -8,9 +8,12 @@ using namespace std;
 #include "tcalendario.h"
 #include "tvectorcalendario.h"
 
+class TCalendario; // Declaración anticipada de TCalendario
+
 class TNodoCalendario{
     friend class TListaPos;
     friend class TListaCalendario;
+    friend class TAVLCalendario;
 
     private:
         //Uso de LAYERING sobre la clase
@@ -28,6 +31,7 @@ class TNodoCalendario{
 class TListaPos{
     friend class TNodoCalendario;
     friend class TListaCalendario;
+    friend class TAVLCalendario;
 
     private:
         //Para implementar la posicion a nodo de la lista de TCalendario

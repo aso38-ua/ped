@@ -5,6 +5,7 @@
 #include <queue>
 #include "tcalendario.h"
 #include "tvectorcalendario.h"
+#include "tlistacalendario.h"
 
 using namespace std;
 
@@ -38,6 +39,8 @@ class TAVLCalendario
         void ActualizarFE();
         int CalcularFE();
         void BorrarAux(const TCalendario &, TNodoAVL *&, bool &);
+
+        int BuscaNodo(const TCalendario &cal) const;
 
     public:
 
@@ -78,6 +81,9 @@ class TAVLCalendario
         TCalendario Raiz() const;
         // Sobrecarga del operador salida
         friend ostream & operator<<(ostream &,const TAVLCalendario &);
+
+        //Examen
+        int* BuscaAVL(TListaCalendario &lista);
 };
 
 class TNodoAVL
