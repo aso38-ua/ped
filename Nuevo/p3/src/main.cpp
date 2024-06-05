@@ -1,31 +1,35 @@
 #include <iostream>
+#include "tavlcalendario.h"
+#include "tlistacalendario.h"
 
-using namespace std;
+int main() {
+    TAVLCalendario avl;
+    TAVLCalendario avl2; //Para probar el vacio
+    TListaCalendario lista;
 
-#include "tvectorcalendario.h"
+    // Insertar elementos en el AVL y en la lista
+    TCalendario cal1(1, 1, 2020, nullptr);
+    TCalendario cal2(6, 1, 2020, nullptr);
+    TCalendario cal3(8, 1, 2020, nullptr);
+    TCalendario cal4(25, 1, 2020, nullptr);
 
-int
-main(void)
-{
-   TVectorCalendario a(3), b(3);
-   TCalendario ca1(1,1,2006, (char*) "uno"), ca2(1,2,2006, (char*) "dos"), ca3(1,3,2006, (char*) "tres");
-   
-   b[1] = ca1;
-   b[2] = ca2;
-   b[3] = ca3;
-   
-   cout << "a=" << a << endl;
-   cout << "b=" << b << endl;
+    avl.Insertar(cal1);
+    avl.Insertar(cal2);
+    avl.Insertar(cal3);
 
-   a = b;
-   
-   cout << "a=" << a << endl;
-   cout << "b=" << b << endl;
+    lista.Insertar(cal1);
+    lista.Insertar(cal2);
+    lista.Insertar(cal3);
+    lista.Insertar(cal4);
 
-   b.Redimensionar(5);
+    int *resultados = avl.BuscaAVL(lista);
 
-   cout << "a=" << a << endl;
-   cout << "b=" << b << endl;
-   
-   return 0;
+    // Imprimir resultados
+    std::cout << "Lista de resultados:" << std::endl;
+    for (int i = 0; i < lista.Longitud(); ++i) {
+        std::cout << "Posición " << i + 1 << ": " << resultados[i] << std::endl;
+    }
+
+    delete[] resultados;
+    return 0;
 }

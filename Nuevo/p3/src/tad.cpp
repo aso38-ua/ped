@@ -1,35 +1,37 @@
 #include <iostream>
-#include "tavlcalendario.h"
+#include "tcalendario.h"
+#include "tvectorcalendario.h"
 #include "tlistacalendario.h"
+#include "tabbcalendario.h"
 
-int main() {
-    TAVLCalendario avl;
-    TAVLCalendario avl2; //Para probar el vacio
-    TListaCalendario lista;
+using namespace std;
 
-    // Insertar elementos en el AVL y en la lista
-    TCalendario cal1(1, 1, 2020, nullptr);
-    TCalendario cal2(6, 1, 2020, nullptr);
-    TCalendario cal3(8, 1, 2020, nullptr);
-    TCalendario cal4(25, 1, 2020, nullptr);
+int
+main(void)
+{
+/*
+PRUEBA:  ABB degenerado,con TCalendarios (1,1,2000,NULL) ... (1,1,2200,NULL) /// Lista entrada <2201> /// Vector salida [2000 ... 2201]
+*/	
+    TVectorCalendario v;
+    TListaCalendario l;
+    TABBCalendario a;
 
-    avl.Insertar(cal1);
-    avl.Insertar(cal2);
-    avl.Insertar(cal3);
+	TCalendario c201(1,1,2201,(char *)"fecha");
+	
+	for (int i=2000; i<=2200;i++)
+	{
+		TCalendario x(1,1,i,NULL);
+		a.Insertar(x);
+	}
 
-    lista.Insertar(cal1);
-    lista.Insertar(cal2);
-    lista.Insertar(cal3);
-    lista.Insertar(cal4);
+	l.Insertar(c201);
+		
+	v = a.ABBCamino(l);
+	
+	cout<< v <<endl;
+	
+	return 0;
+  }
 
-    int *resultados = avl.BuscaAVL(lista);
 
-    // Imprimir resultados
-    std::cout << "Lista de resultados:" << std::endl;
-    for (int i = 0; i < lista.Longitud(); ++i) {
-        std::cout << "Posición " << i + 1 << ": " << resultados[i] << std::endl;
-    }
 
-    delete[] resultados;
-    return 0;
-}
